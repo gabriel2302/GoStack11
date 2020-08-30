@@ -69,4 +69,4 @@
 - O usuário não pode agendar em um horário que já passou;
 - O usuário não pode agendar consigo mesmo;
 
-aula 03 - Reset de senha
+next => aula 06 - Emails em desenvolvimento
