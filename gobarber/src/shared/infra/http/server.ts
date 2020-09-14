@@ -3,6 +3,7 @@ import 'express-async-errors';
 import '@shared/infra/typeorm';
 import '@shared/container';
 
+import { errors } from 'celebrate';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -16,6 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(routes);
+
+app.use(errors());
 
 // importante que fique depois das rotas
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
