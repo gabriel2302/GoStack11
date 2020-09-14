@@ -69,4 +69,4 @@
 - O usuário não pode agendar em um horário que já passou;
 - O usuário não pode agendar consigo mesmo;
 
-next => aula 11 - Rota e controller de perfil
+next => aula 1 - Agenda do prestador
