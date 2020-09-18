@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { FiLogIn, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -22,6 +22,7 @@ interface ForgotPasswordFormData {
 }
 
 export const ForgotPassword: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
@@ -29,6 +30,8 @@ export const ForgotPassword: React.FC = () => {
   const handleSubmit = useCallback(
     async (data: ForgotPasswordFormData) => {
       try {
+        setLoading(true);
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -66,6 +69,8 @@ export const ForgotPassword: React.FC = () => {
           description:
             'Ocorreu um erro ao tentar realizar a recuperação de senha, tente novamente.',
         });
+      } finally {
+        setLoading(false);
       }
     },
     [addToast],
@@ -86,7 +91,9 @@ export const ForgotPassword: React.FC = () => {
               placeholder="E-mail"
             />
 
-            <Button type="submit">Recuperar</Button>
+            <Button loading={loading} type="submit">
+              Recuperar
+            </Button>
           </Form>
 
           <Link to="/">
