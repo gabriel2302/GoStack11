@@ -52,8 +52,16 @@ export const Profile = styled.div`
       color: #f4ede8;
     }
 
-    strong {
-      color: #ff9900;
+    a {
+      text-decoration: none;
+
+      strong {
+        color: #ff9900;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 `;
@@ -161,6 +169,10 @@ export const Section = styled.section`
     display: block;
     padding-bottom: 16px;
     margin-bottom: 16px;
+  }
+
+  > p {
+    color: #999591;
   }
 `;
 

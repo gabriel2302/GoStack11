@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { format, isToday } from 'date-fns';
+import { format, isAfter, isToday } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
 import { FiClock, FiPower } from 'react-icons/fi';
 import { parseISO } from 'date-fns/esm';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Header,
@@ -51,7 +52,7 @@ const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
-    if (modifiers.available) {
+    if (modifiers.available && !modifiers.disabled) {
       setSelectedDate(day);
     }
   }, []);
@@ -97,6 +98,13 @@ const Dashboard: React.FC = () => {
     });
   }, [appointments]);
 
+  const nextAppointment = useMemo(() => {
+    return appointments.find((appointment) =>
+      isAfter(parseISO(appointment.date), new Date()),
+    );
+  }, [appointments]);
+
+  // appointments in month
   useEffect(() => {
     api
       .get(`providers/${user.id}/month-availability`, {
@@ -110,6 +118,7 @@ const Dashboard: React.FC = () => {
       });
   }, [currentMonth, user.id]);
 
+  // appointments for provider logged
   useEffect(() => {
     api
       .get<Appointment[]>(`/appointments/me`, {
@@ -127,7 +136,6 @@ const Dashboard: React.FC = () => {
           };
         });
         setAppointments(appointmentFormatted);
-        console.log(response.data);
       });
   }, [selectedDate]);
 
@@ -140,7 +148,9 @@ const Dashboard: React.FC = () => {
             <img src={user.avatar_url} alt={user.name} />
             <div>
               <span>Bem-vindo,</span>
-              <strong>{user.name}</strong>
+              <Link to="/profile">
+                <strong>{user.name}</strong>
+              </Link>
             </div>
           </Profile>
           <button type="button" onClick={signOut}>
@@ -158,24 +168,30 @@ const Dashboard: React.FC = () => {
             <span>{selectedWeekDay}</span>
           </p>
 
-          <NextAppointment>
-            <strong>Atendimento a seguir</strong>
-            <div>
-              <img
-                src="https://avatars0.githubusercontent.com/u/45977515?s=460&u=0c61a20eb23609d1e85743e46c1d4b340ea89f99&v=4"
-                alt="usuário"
-              />
+          {isToday(selectedDate) && nextAppointment && (
+            <NextAppointment>
+              <strong>Agendamento a seguir</strong>
+              <div>
+                <img
+                  src={nextAppointment.user.avatar_url}
+                  alt={nextAppointment.user.name}
+                />
 
-              <strong>Gabriel Queiroz</strong>
-              <span>
-                <FiClock />
-                08:00
-              </span>
-            </div>
-          </NextAppointment>
+                <strong>{nextAppointment.user.name}</strong>
+                <span>
+                  <FiClock />
+                  {nextAppointment.hourFormatted}
+                </span>
+              </div>
+            </NextAppointment>
+          )}
 
           <Section>
-            {/* <strong>Manhã</strong>
+            <strong>Manhã</strong>
+
+            {morningAppointments.length === 0 && (
+              <p>Nenhum agendamento para esse período</p>
+            )}
 
             {morningAppointments.map((appointment) => (
               <Appointment key={appointment.id}>
@@ -191,11 +207,15 @@ const Dashboard: React.FC = () => {
                   <strong>{appointment.user.name}</strong>
                 </div>
               </Appointment>
-            ))} */}
+            ))}
           </Section>
 
           <Section>
-            {/* <strong>Tarde</strong>
+            <strong>Tarde</strong>
+
+            {afternoonAppointments.length === 0 && (
+              <p>Nenhum agendamento para esse período</p>
+            )}
 
             {afternoonAppointments.map((appointment) => (
               <Appointment key={appointment.id}>
@@ -211,7 +231,7 @@ const Dashboard: React.FC = () => {
                   <strong>{appointment.user.name}</strong>
                 </div>
               </Appointment>
-            ))} */}
+            ))}
           </Section>
         </Schedule>
         <Calendar>
