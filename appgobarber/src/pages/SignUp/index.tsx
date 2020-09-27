@@ -14,6 +14,7 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
+import api from '../../services/api';
 import getValidationErrors from '../../utils/getValidationErrors';
 
 import Input from '../../components/Input';
@@ -36,39 +37,49 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('E-mail inválido'),
-        password: Yup.string()
-          .min(6, 'No mínimo 6 dígitos')
-          .required('Senha obrigatória'),
-      });
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('E-mail inválido'),
+          password: Yup.string()
+            .min(6, 'No mínimo 6 dígitos')
+            .required('Senha obrigatória'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      // await signIn({ email: data.email, password: data.password });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
+        await api.post('/users', data);
 
-        formRef.current?.setErrors(errors);
-        return;
+        Alert.alert(
+          'Cadastro realizado com sucesso!',
+          'Você já pode fazer login na aplicação.',
+        );
+
+        navigation.goBack();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+          return;
+        }
+
+        Alert.alert(
+          'Erro no cadastro',
+          'Ocorreu um erro ao fazer cadastrar, tente novamente',
+        );
       }
-
-      Alert.alert(
-        'Erro no cadastro',
-        'Ocorreu um erro ao fazer login, cheque as credenciais',
-      );
-    }
-  }, []);
+    },
+    [navigation],
+  );
 
   return (
     <>
@@ -129,22 +140,14 @@ const SignUp: React.FC = () => {
               />
             </Form>
 
-            <Button
-              onPress={() => {
-                formRef.current?.submitForm();
-              }}
-            >
-              Entrar
+            <Button onPress={() => formRef.current?.submitForm()}>
+              Cadastrar
             </Button>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <BackToSignIn
-        onPress={() => {
-          navigation.goBack();
-        }}
-      >
+      <BackToSignIn onPress={() => navigation.goBack()}>
         <Icon name="arrow-left" size={20} color="#fff" />
         <BackToSignInText>Voltar para logon</BackToSignInText>
       </BackToSignIn>
