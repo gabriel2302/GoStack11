@@ -33,6 +33,7 @@
     "import/prefer-default-export": "off",
     "import/no-duplicates": "off",
     "camelcase": "off",
+    "no-shadow": "off",
     "no-use-before-define": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/explicit-function-return-type": [
