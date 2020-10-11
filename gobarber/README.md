@@ -64,9 +64,26 @@
 **RN**
 
 - Cada agendamento deve durar 1h exatamente;
-- Os agendamentos devem estar disponíveis entre 8h às 18h (Primeiro às 8h, último às 17h);
+- Os agendamentos devem estar disponíveis entre 8h às 18h (Primeiro às 8h, último às 17h;
 - O usuário não pode agendar em um horário já ocupado;
 - O usuário não pode agendar em um horário que já passou;
 - O usuário não pode agendar consigo mesmo;
 
-next =>02- Personalizando para produção/ aula 1 - Validando dados
+
+# Dependências
+
+**Redis**
+```
+docker run --name redis 6379:6379 -d -t redis:alpine
+```
+
+**Mongo**
+
+```
+docker run --name mongobarber -p 27017:27017 -d mongo
+```
+
+**Postgres**
+```
+docker run --name postgres -p 5432:5432 -d postgress
+```
