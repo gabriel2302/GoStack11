@@ -85,5 +85,5 @@ docker run --name mongobarber -p 27017:27017 -d mongo
 
 **Postgres**
 ```
-docker run --name postgres -p 5432:5432 -d postgress
+docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgress
 ```
