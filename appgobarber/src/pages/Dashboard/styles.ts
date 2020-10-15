@@ -86,3 +86,5 @@ export const ProvidersListTitle = styled.Text`
   color: #f4ede8;
   font-family: 'RobotoSlab-Medium';
 `;
+
+export const LogoutButton = styled(RectButton)``;

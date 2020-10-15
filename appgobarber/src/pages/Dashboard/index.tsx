@@ -22,6 +22,7 @@ import {
   ProviderName,
   ProviderMetaText,
   ProvidersListTitle,
+  LogoutButton,
 } from './styles';
 
 export interface Provider {
@@ -52,6 +53,9 @@ const Dashboard: React.FC = () => {
     },
     [navigate],
   );
+  const handleLogout = useCallback(() => {
+    signOut();
+  }, [signOut]);
 
   return (
     <Container>
@@ -61,7 +65,9 @@ const Dashboard: React.FC = () => {
           {'\n'}
           <UserName>{user.name}</UserName>
         </HeaderTitle>
-
+        <LogoutButton onPress={handleLogout}>
+          <Icon name="log-out" size={20} color="#ff9000" />
+        </LogoutButton>
         <ProfileButton onPress={navigateToProfile}>
           <UserAvatar source={{ uri: user.avatar_url }} />
         </ProfileButton>
